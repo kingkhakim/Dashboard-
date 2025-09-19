@@ -79,18 +79,18 @@ with tab5:
     r = df[['Hours', 'GAD_T']].corr().loc['Hours', 'GAD_T']
     st.info(f"📌 Korelasi Pearson (r) antara Jam Bermain dan Skor Kecemasan: **{r:.3f}**")
 
-# Tab 6: Clustering Gamer
-# Tab 6: Clustering Gamer
+# Tab 6: Lokasi Gamer
 with tab6:
     st.subheader("🌍 Lokasi Gamer")
 
-    if "Location" in df.columns:
-        loc_counts = df["Location"].value_counts().reset_index()
-        loc_counts.columns = ["Location", "Count"]
+    if "Birthplace" in df.columns:
+        loc_counts = df["Birthplace"].value_counts().reset_index()
+        loc_counts.columns = ["Birthplace", "Count"]
 
+        # Bar chart: 10 besar lokasi
         fig_loc = px.bar(
             loc_counts.head(10),  # ambil 10 lokasi terbanyak
-            x="Location",
+            x="Birthplace",
             y="Count",
             color="Count",
             color_continuous_scale="Viridis",
@@ -98,14 +98,14 @@ with tab6:
         )
         st.plotly_chart(fig_loc, use_container_width=True)
 
-        # Pie chart juga bisa
+        # Pie chart: distribusi keseluruhan
         fig_loc_pie = px.pie(
             loc_counts,
             values="Count",
-            names="Location",
+            names="Birthplace",
             title="Distribusi Lokasi Gamer"
         )
         st.plotly_chart(fig_loc_pie, use_container_width=True)
 
     else:
-        st.warning("Kolom lokasi tidak ditemukan di dataset.")
+        st.warning("Kolom 'Birthplace' tidak ditemukan di dataset.")
