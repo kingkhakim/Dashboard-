@@ -83,14 +83,14 @@ with tab5:
 with tab6:
     st.subheader("🌍 Lokasi Gamer")
 
-    if "Birthplace" in df.columns:
-        loc_counts = df["Birthplace"].value_counts().reset_index()
-        loc_counts.columns = ["Birthplace", "Count"]
+    if "Residence" in df.columns:
+        loc_counts = df["Residence"].value_counts().reset_index()
+        loc_counts.columns = ["Residence", "Count"]
 
         # Bar chart: 10 besar lokasi
         fig_loc = px.bar(
             loc_counts.head(10),  # ambil 10 lokasi terbanyak
-            x="Birthplace",
+            x="Residence",
             y="Count",
             color="Count",
             color_continuous_scale="Viridis",
@@ -102,10 +102,11 @@ with tab6:
         fig_loc_pie = px.pie(
             loc_counts,
             values="Count",
-            names="Birthplace",
+            names="Residence",
             title="Distribusi Lokasi Gamer"
         )
         st.plotly_chart(fig_loc_pie, use_container_width=True)
 
     else:
-        st.warning("Kolom 'Birthplace' tidak ditemukan di dataset.")
+        st.warning("Kolom 'Residence' tidak ditemukan di dataset.")
+
