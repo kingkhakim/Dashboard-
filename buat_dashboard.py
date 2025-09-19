@@ -31,8 +31,9 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Jam Bermain",
     "Game Populer",
     "Jam Main vs Kecemasan",
-    "Clustering Gamer"
+    "Lokasi Gamer"
 ])
+
 
 # --- 5. Grafik ---
 # Tab 1: Distribusi Usia
@@ -81,36 +82,30 @@ with tab5:
 # Tab 6: Clustering Gamer
 # Tab 6: Clustering Gamer
 with tab6:
-    st.subheader("🔎 Clustering Gamer berdasarkan Pola Bermain & Kesehatan Mental")
+    st.subheader("🌍 Lokasi Gamer")
 
-    features = ["Hours_capped", "GAD_T", "SWL_T", "SPIN_T"]
-    X = df[features].dropna()
+    if "Location" in df.columns:
+        loc_counts = df["Location"].value_counts().reset_index()
+        loc_counts.columns = ["Location", "Count"]
 
-    # normalisasi
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+        fig_loc = px.bar(
+            loc_counts.head(10),  # ambil 10 lokasi terbanyak
+            x="Location",
+            y="Count",
+            color="Count",
+            color_continuous_scale="Viridis",
+            title="10 Lokasi Teratas Gamer"
+        )
+        st.plotly_chart(fig_loc, use_container_width=True)
 
-    # KMeans
-    kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
-    X["Cluster"] = kmeans.fit_predict(X_scaled)
+        # Pie chart juga bisa
+        fig_loc_pie = px.pie(
+            loc_counts,
+            values="Count",
+            names="Location",
+            title="Distribusi Lokasi Gamer"
+        )
+        st.plotly_chart(fig_loc_pie, use_container_width=True)
 
-    # gabungkan cluster kembali ke df asli (hanya pada baris yang valid)
-    df = df.join(X["Cluster"], how="left")
-
-    # scatter plot cluster
-    fig_cluster = px.scatter(
-        df.dropna(subset=["Cluster"]),
-        x="Hours_capped", y="GAD_T",
-        color="Cluster",
-        hover_data=["SWL_T", "SPIN_T"],
-        title="Cluster Gamer: Jam Bermain vs Kecemasan",
-        color_discrete_sequence=px.colors.qualitative.Set2
-    )
-    st.plotly_chart(fig_cluster, use_container_width=True)
-
-    # distribusi cluster
-    cluster_counts = df["Cluster"].value_counts().reset_index()
-    cluster_counts.columns = ["Cluster", "Jumlah Gamer"]
-    st.dataframe(cluster_counts)
-
-    st.success("Cluster sudah berhasil dibuat dan ditampilkan 🎉")
+    else:
+        st.warning("Kolom lokasi tidak ditemukan di dataset.")
